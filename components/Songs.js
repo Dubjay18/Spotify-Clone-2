@@ -1,4 +1,4 @@
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import { playlistState } from "../atoms/playlistAtom";
 import Song from "./Song";
 

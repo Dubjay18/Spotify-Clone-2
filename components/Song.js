@@ -1,13 +1,11 @@
-import { data } from "autoprefixer";
 import { useRecoilState } from "recoil";
 import { currentTrackIdState, isPlayingState } from "../atoms/songAtom";
 import { millisToMinutesAndSeconds } from "../lib/time";
 import useSpotify from "./../hooks/useSpotify";
 const Song = ({ order, track }) => {
   const spotifyApi = useSpotify();
-  const [currentTrackId, setCurrentTrackId] =
-    useRecoilState(currentTrackIdState);
-  const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState);
+  const [setCurrentTrackId] = useRecoilState(currentTrackIdState);
+  const [setIsPlaying] = useRecoilState(isPlayingState);
   const playSong = () => {
     setCurrentTrackId(track.track.id);
     setIsPlaying(true);
@@ -15,7 +13,7 @@ const Song = ({ order, track }) => {
       urls: track.track.url,
     });
   };
- 
+
   return (
     <div
       className="grid grid-cols-2 text-gray-500 py-4 px-5 hover:bg-gray-900 "

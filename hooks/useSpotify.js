@@ -7,7 +7,7 @@ const spotifyApi = new SpotifyWebApi({
   clientSecret: process.env.NEXT_PUBLIC_CLIENT_SECRET,
 });
 const useSpotify = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   useEffect(() => {
     if (session) {
       if (session.error === "RefreshAccessTokenError") {
