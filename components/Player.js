@@ -1,6 +1,6 @@
 import { useRecoilState } from "recoil";
 import { currentTrackIdState, isPlayingState } from "../atoms/songAtom";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useSonginfo from "../hooks/useSonginfo";
 import { SwitchHorizontalIcon, VolumeOffIcon } from "@heroicons/react/outline";
 import {
@@ -12,6 +12,7 @@ import {
   VolumeUpIcon,
 } from "@heroicons/react/solid";
 import SpotifyWebApi from "spotify-web-api-js";
+import debounce from "lodash.debounce";
 
 const spotifyApi = new SpotifyWebApi();
 const Player = () => {
@@ -50,14 +51,17 @@ const Player = () => {
       setVolume(50);
     }
   }, [currentTrackIdState, spotifyApi]);
-  //   useEffect(() => {
-  //      if(volume > 0 && volume < 100){
-  //          debouncedAdjustVolume(volume)
-  //      }
-  //   }, [volume])
-  //   const debouncedAdjustVolume = useCallback(
-  //       deb
-  //   )
+  useEffect(() => {
+    if (volume > 0 && volume < 100) {
+      debouncedAdjustVolume(volume);
+    }
+  }, [volume]);
+  const debouncedAdjustVolume = useCallback(
+    debounce((volume) => {
+      spotifyApi.setVolume(volume).catch((err) => {});
+    }, 500),
+    []
+  );
   return (
     <div className="h-24 bg-gradient-to-b from-black to-gray-900 text-white grid grid-cols-3 text-xs md:text-base px-2 md:px-8">
       <div className="flex items-center space-x-4">
