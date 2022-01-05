@@ -1,5 +1,10 @@
-import { getProviders, signIn } from "next-auth/react";
-const Login = ({ providers }) => {
+import { loginUrl } from "../lib/spotify";
+
+const Login = () => {
+  // const log = (provider) => {
+  //   setKey(true);
+  //   signIn(provider.id, { callbackUrl: "/" });
+  // };
   return (
     <div className="flex flex-col items-center bg-black min-h-screen w-full justify-center">
       <img
@@ -7,30 +12,14 @@ const Login = ({ providers }) => {
         src="https://getheavy.com/wp-content/uploads/2019/12/spotify2019-830x350.jpg"
         alt=""
       />
-      {Object.values(providers).map((provider) => {
-        return (
-          <div key={provider.name}>
-            <button
-              className="bg-[#1ed15d] text-white p-5 rounded-lg"
-              onClick={() => signIn(provider.id, { callbackUrl: "/" })}
-            >
-              Login with {provider.name}
-            </button>
-          </div>
-        );
-      })}
+
+      <div>
+        <a className="bg-[#1ed15d] text-white p-5 rounded-lg" href={loginUrl}>
+          Login with Spotify
+        </a>
+      </div>
     </div>
   );
 };
 
 export default Login;
-
-export async function getServerSideProps() {
-  const providers = await getProviders();
-
-  return {
-    props: {
-      providers,
-    },
-  };
-}

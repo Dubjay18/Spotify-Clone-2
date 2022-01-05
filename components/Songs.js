@@ -5,11 +5,11 @@ import Song from "./Song";
 const Songs = () => {
   const playlist = useRecoilValue(playlistState);
   //   const [playlist, setPlaylist] = useRecoilState(playlistState);
-
+  console.log("plays", playlist);
   return (
     <div className="px-8 flex flex-col text-white">
       {playlist?.tracks.items.map((track, i) => {
-        return <Song key={track.track.id} track={track} order={i} />;
+        return <Song key={track.id} track={track} order={i} />;
       })}
     </div>
   );

@@ -1,9 +1,11 @@
 import { ChevronDownIcon, MenuIcon } from "@heroicons/react/outline";
-import { signOut, useSession } from "next-auth/react";
+
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
+import SpotifyWebApi from "spotify-web-api-js";
 import { playlistIdState, playlistState } from "../atoms/playlistAtom";
-import useSpotify from "../hooks/useSpotify";
+import { userState } from "../atoms/userAtom";
+
 import Songs from "./Songs";
 
 const colors = [
@@ -14,12 +16,13 @@ const colors = [
   "from-yellow-500",
   "from-pink-500",
   "from-purple-500",
+  "from-gray-500",
 ];
+const spotifyApi = new SpotifyWebApi();
 const Center = ({ setBug, bug }) => {
-  const { data: session } = useSession();
-  const spotifyApi = useSpotify();
   const [color, setColor] = useState(null);
   const playlistId = useRecoilValue(playlistIdState);
+  const user = useRecoilValue(userState);
   const [playlist, setPlaylist] = useRecoilState(playlistState);
   useEffect(() => {
     setColor(colors[Math.floor(Math.random() * 8)]);
@@ -28,11 +31,10 @@ const Center = ({ setBug, bug }) => {
     spotifyApi
       .getPlaylist(playlistId)
       .then((data) => {
-        setPlaylist(data.body);
+        setPlaylist(data);
       })
       .catch((err) => console.log("something went wrong!", err));
   }, [spotifyApi, playlistId]);
-  console.log(playlist);
 
   return (
     <div className=" flex-grow h-screen overflow-y-scroll text-white">
@@ -40,16 +42,13 @@ const Center = ({ setBug, bug }) => {
         <div onClick={() => setBug(!bug)} className="md:hidden">
           <MenuIcon className="h-10" />
         </div>
-        <div
-          className="flex items-center bg-black space-x-3 opacity-90 hover:opacity-80 cursor-pointer rounded-full p-1 pr-2 text-white"
-          onClick={() => signOut()}
-        >
+        <div className="flex items-center bg-black space-x-3 opacity-90 hover:opacity-80 cursor-pointer rounded-full p-1 pr-2 text-white">
           <img
             className="rounded-full w-10 h-10"
-            src={session?.user.image}
+            src={user?.images[0]?.url}
             alt=""
           />
-          <h2>{session?.user.name}</h2>
+          <h2>{user?.display_name}</h2>
           <ChevronDownIcon />
         </div>
       </header>

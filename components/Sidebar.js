@@ -6,32 +6,33 @@ import {
   RssIcon,
 } from "@heroicons/react/outline";
 import { HeartIcon } from "@heroicons/react/solid";
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import useSpotify from "../hooks/useSpotify";
-import { useRecoilState } from "recoil";
-import { playlistIdState } from "../atoms/playlistAtom";
+
+import { useRecoilState, useRecoilValue } from "recoil";
+import { listState, playlistIdState } from "../atoms/playlistAtom";
 const Sidebar = ({ bug, setBug, setHam, ham }) => {
-  const spotifyApi = useSpotify();
-  const { data: session } = useSession();
-  const [playlists, setPlaylists] = useState();
   const [playlistId, setPlaylistId] = useRecoilState(playlistIdState);
+  const playlists = useRecoilValue(listState);
 
-  useEffect(() => {
-    if (spotifyApi.getAccessToken()) {
-      spotifyApi.getUserPlaylists().then((data) => {
-        setPlaylists(data.body.items);
-      });
-    }
-  }, [session, spotifyApi]);
+  // useEffect(() => {
+  //   // if (spotifyApi.getAccessToken()) {
+  //   //   spotifyApi.getUserPlaylists().then((data) => {
+  //   //     setPlaylists(data.body.items);
+  //   //   });
+  //   // }
+  // }, [session, spotifyApi]);
 
-  console.log(playlists);
-  console.log("id", playlistId);
+  // console.log(playlists);
+  // console.log("id", playlistId);
   return (
     <div
       className={`text-gray-500 p-5 text-xs lg:text-sm border-r border-gray-900 overflow-y-scroll h-screen sm:max-w-[12rem] lg:max-w-[15rem] ${ham} md:inline-flex pb-36`}
     >
       <div className="space-y-4">
+        <img
+          className="w-28 mb-5"
+          src="https://getheavy.com/wp-content/uploads/2019/12/spotify2019-830x350.jpg"
+          alt=""
+        />
         <button className="flex items-center space-x-2 hover:text-white">
           <HomeIcon className="h-5 w-5" />
           <p>Home</p>
@@ -65,7 +66,7 @@ const Sidebar = ({ bug, setBug, setHam, ham }) => {
         </button> */}
         {/* PlayLists.....  */}
         {playlists &&
-          playlists.map((playlist) => {
+          playlists?.items?.map((playlist) => {
             return (
               <p
                 key={playlist.id}

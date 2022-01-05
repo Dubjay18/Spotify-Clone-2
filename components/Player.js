@@ -1,5 +1,3 @@
-import { useSession } from "next-auth/react";
-import useSpotify from "../hooks/useSpotify";
 import { useRecoilState } from "recoil";
 import { currentTrackIdState, isPlayingState } from "../atoms/songAtom";
 import { useEffect, useState } from "react";
@@ -13,28 +11,31 @@ import {
   RewindIcon,
   VolumeUpIcon,
 } from "@heroicons/react/solid";
+import SpotifyWebApi from "spotify-web-api-js";
+
+const spotifyApi = new SpotifyWebApi();
 const Player = () => {
-  const spotifyApi = useSpotify();
-  const { data: session } = useSession();
   const [currentTrackId, setCurrentTrackId] =
     useRecoilState(currentTrackIdState);
   const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState);
   const [volume, setVolume] = useState(50);
 
   const songInfo = useSonginfo();
+
   const fetchCurrentSong = () => {
     if (!songInfo) {
       spotifyApi.getMyCurrentPlayingTrack().then((data) => {
-        setCurrentTrackId(data.body?.item?.id);
+        setCurrentTrackId(data?.is_playing?.id);
         spotifyApi.getMyCurrentPlaybackState().then((data) => {
-          setIsPlaying(data.body?.is_playing);
+          setIsPlaying(data?.is_Playing);
         });
       });
     }
   };
   const handlePlayPause = () => {
     spotifyApi.getMyCurrentPlaybackState().then((data) => {
-      if (data.body.is_playing) {
+      console.log(data);
+      if (data.is_playing) {
         spotifyApi.pause();
         setIsPlaying(false);
       } else {
@@ -48,7 +49,7 @@ const Player = () => {
       fetchCurrentSong();
       setVolume(50);
     }
-  }, [currentTrackIdState, spotifyApi, session]);
+  }, [currentTrackIdState, spotifyApi]);
   //   useEffect(() => {
   //      if(volume > 0 && volume < 100){
   //          debouncedAdjustVolume(volume)
